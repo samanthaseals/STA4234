@@ -1,7 +1,5 @@
 library(tidyverse)
 
-# Example 1
-
 # The following data are systolic blood pressure (SBP) and age for a sample of 
 # 30 individuals. 
 
