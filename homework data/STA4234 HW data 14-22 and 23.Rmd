@@ -1,0 +1,37 @@
+---
+title: 'STA4234: Homework Starter'
+output: 
+  html_document:
+      toc: TRUE
+      toc_depth: 4
+      toc_float: TRUE
+always_allow_html: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(googlesheets4)
+```
+
+## Data from 14.22 and 14.23
+
+In an analysis of daily soil evaporation (EVAP), Freund (1979) identified the following predictor variables:
+    MAXAT: Maximum daily air temperature 
+    MINAT: Minimum daily air temperature
+    AVAT: Integrated area under the daily air temperature curve (i.e., a measure of average air temperature)
+    MAXST: Maximum daily soil temperature 
+    MINST: Minimum daily soil temperature
+    AVST: Integrated area under the daily soil temperature curve 
+    MAXH: Maximum daily relative humidity
+    MINH: Minimum daily relative humidity 
+    AVH: Integrated area under the daily relative humidity curve
+    WIND: Total wind, measured in miles per day
+
+```{r}
+data <- read_sheet("https://docs.google.com/spreadsheets/d/1GZeDx6LZNML2MURS6Nl2ap3V9WQQRCFX-GPkZwHzEqo/edit?usp=sharing")
+```
+
+
+
+

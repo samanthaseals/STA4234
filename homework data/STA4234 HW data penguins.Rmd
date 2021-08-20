@@ -1,0 +1,24 @@
+---
+title: 'STA4234: Homework Starter'
+output: 
+  html_document:
+      toc: TRUE
+      toc_depth: 4
+      toc_float: TRUE
+always_allow_html: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(palmerpenguins)
+library(fastDummies)
+```
+
+## Data from the Palmer Penguin package
+
+```{r}
+data <- na.omit(penguins)
+
+data <- dummy_cols(data, select_columns = c("species", "sex"))
+```
