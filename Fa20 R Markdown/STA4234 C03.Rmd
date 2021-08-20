@@ -1,0 +1,139 @@
+---
+title: 'STA4234: Chapter 3 Examples'
+date: "Last updated: `r Sys.Date()`"
+output: 
+  html_document:
+      toc: TRUE
+      toc_depth: 4
+      toc_float: TRUE
+always_allow_html: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+
+# this is a comment
+```
+
+<!-- This is a comment -->
+
+## Example 1
+
+The survival times (in months) for two treatments for patients with severe chronic left-ventricular heart failure are as follows:
+```{r}
+new <- c(rep(0, 28), rep(1, 28))
+survival.time <- c( 4, 15, 24, 10,  1, 27, 31,
+                   14,  2, 16, 32,  7, 13, 36,
+                   29,  6, 12, 18, 14, 15, 18,
+                    6, 13, 21, 20,  8,  3, 24,
+                    5, 20, 29, 15,  7, 32, 36,
+                   17, 15, 19, 35, 10, 16, 39,
+                   27, 14, 10, 16, 12, 13, 16,
+                    9, 18, 33, 30, 29, 31, 27)  
+seven <- tibble(new, survival.time)
+seven$new <-as.factor(seven$new)
+```
+
+### Data description
+
+#### Overall
+
+```{r}
+seven.summary.all <- seven %>%
+                     summarise(mean = mean(survival.time), sd = sd(survival.time), median = median(survival.time)) # creating new variables "mean" "sd" and "median"
+```
+
+`r seven.summary.all$mean[1]`
+
+The mean (standard deviation) survival time is `r round(seven.summary.all$mean[1], digits = 2)` (`r round(seven.summary.all$sd[1], digits = 2)`) months. 
+
+The median survival time is `r round(seven.summary.all$median[1], digits = 2)` months.
+
+#### By group
+
+```{r}
+seven.summary.groups <- seven %>%
+                        group_by(new) %>% # telling it to do everything by therapy group 
+                        summarise(mean = mean(survival.time), sd = sd(survival.time), median = median(survival.time))
+```
+
+The mean (standard deviation) survival time for those on the standard therapy is `r round(seven.summary.groups$mean[1], digits = 2)` (`r round(seven.summary.groups$sd[1], digits = 2)`) months. 
+
+The median survival time for those on the standard therapy is `r round(seven.summary.groups$median[1], digits = 2)` months.
+
+The mean (standard deviation) survival time for those on the new therapy is `r round(seven.summary.groups$mean[2], digits = 2)` (`r round(seven.summary.groups$sd[2], digits = 2)`) months. 
+
+The median survival time for those on the new therapy is `r round(seven.summary.groups$median[2], digits = 2)` months.
+
+### Visualization
+
+```{r}
+seven %>% 
+  ggplot() +
+    geom_boxplot(aes(new,survival.time, group = new)) + 
+    xlab("Standard vs. New Treatment") + 
+    ylab("Survival Time (months)") +
+    theme_bw()
+```
+
+## Example 2
+
+The February 1998 issue of Consumer Reports provides data on the price of 24 brands of paper towels. The prices are given in both cost per roll and cost per sheet -- the brands had varying numbers of sheets per roll.
+
+```{r}
+sheets <- c(50,  55,  64,  96,  90, 60,
+            52,  72,  80,  52,  85, 80,
+            85,  80,  80,  80,  85, 85,
+            78, 180, 180, 100, 100, 90)
+price.roll <- c(1.59, 0.89, 0.97, 1.49, 1.56, 0.84,
+                0.79, 0.75, 0.72, 0.53, 0.59, 0.89,
+                0.67, 0.66, 0.59, 0.76, 0.85, 0.59,
+                0.57, 1.78, 1.98, 0.67, 0.79, 0.55)
+price.sheet <- c(0.0318, 0.0162, 0.0152, 0.0155, 0.0173, 0.0140,
+                 0.0152, 0.0104, 0.0090, 0.0102, 0.0069, 0.0111,
+                 0.0079, 0.0083, 0.0074, 0.0095, 0.0100, 0.0069,
+                 0.0073, 0.0099, 0.0100, 0.0067, 0.0079, 0.0061)
+forty.five <- tibble(sheets, price.roll, price.sheet)
+
+forty.five.summary <- forty.five %>% summarise(mean.roll = mean(price.roll), sd.roll = sd(price.roll), median.roll = median(price.roll), mean.sheet = mean(price.sheet), sd.sheet = sd(price.sheet), median.sheet = median(price.sheet))
+forty.five.summary
+```
+
+### Data Description
+
+#### Per roll
+
+The mean (standard deviation) price is \$`r round(forty.five.summary$mean.roll[1], digits = 2)` (\$`r round(forty.five.summary$sd.roll[1], digits = 2)`) 
+
+The median price is \$`r round(forty.five.summary$median.roll[1], digits = 2)`.
+
+#### Per sheet
+The mean (standard deviation) price is \$`r round(forty.five.summary$mean.sheet[1], digits = 2)` (\$`r round(forty.five.summary$sd.sheet[1], digits = 2)`)
+
+The median price is \$`r round(forty.five.summary$median.sheet[1], digits = 2)`.
+
+### Visualization
+
+#### Per roll
+
+```{r}
+forty.five %>% 
+  ggplot(aes(x = sheets, y=price.roll)) +
+    geom_point() + 
+    xlab("Number of Sheets Per Roll") + 
+    ylab("Price per Roll") +
+    theme_bw() 
+```
+
+#### Per sheet
+
+```{r}
+forty.five %>% 
+  ggplot(aes(x = sheets, y=price.sheet)) +
+    geom_point() + 
+    xlab("Number of Sheets Per Roll") + 
+    ylab("Price per Sheet") +
+    theme_bw() 
+```
+

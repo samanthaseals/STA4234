@@ -1,0 +1,110 @@
+---
+title: 'STA4234: Chapter 12 Examples'
+date: "Last updated: `r Sys.Date()`"
+output: 
+  html_document:
+      toc: TRUE
+      toc_depth: 5
+      toc_float: TRUE
+always_allow_html: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE)
+library(tidyverse)
+library(pander)
+library(fastDummies)
+library(car)
+
+
+### p.value.string v2
+# Update v2: added the formatting that turns of scientific notation
+# fixes the case when p = 0.0001 (instead of p=1e-4)
+# This function called p.value.string creates a string
+# to be used when reporting the p-value. It includes the p on the LHS.
+# You will likely place it in $$ to get the LaTeX math formatting.
+# This should be placed in an r code chunk in the beginning of your R markdown
+# This code chunk by itself shouldn't produce any result.
+# by Reid Ginoza
+
+p.value.string = function(p.value){
+  p.value <- round(p.value, digits=4)
+  if (p.value == 0) {
+    return("p < 0.0001")
+  } else {
+    return(paste0("p = ", format(p.value, scientific = F)))
+  }
+}
+```
+
+## Kickstarter Example
+```{r}
+one <- read_csv("/Volumes/GoogleDrive/My Drive/STA4234/R Markdown/kickstarter.csv")
+
+# look at the state of the campaigns 
+# table(one$state)
+
+# want to exclude "live" "suspended" and undefined
+one2 <- one %>% filter(state != "live" & state != "suspended" & state != "undefined")
+
+# check to see if our filtering worked
+# table(one2$state)
+
+one_m1 <- lm(usd_goal_real ~ state, data=one2)
+summary(one_m1)
+
+# create dummy variables
+one2 <- dummy_cols(one2, select_columns = "state")
+
+# can specify dummy variables in model itself
+one_m2 <- lm(usd_goal_real ~ state_successful + state_failed, data=one2)
+summary(one_m2)
+
+# want to specify "successful" as the reference group, so that is the one we will leave out
+one_m3 <- lm(usd_goal_real ~ state_canceled + state_failed, data=one2)
+summary(one_m3)
+```
+
+
+## Ice cream example
+```{r}
+# read in data
+two <- read_csv("/Volumes/GoogleDrive/My Drive/STA4234/R Markdown/milkfat.csv")
+
+# strip off the %
+two$Sweetner2 <- as.numeric(str_replace(two$Sweetner, '%', ''))
+two$MilkFat2 <- as.numeric(str_replace(two$MilkFat, '%', ''))
+two$Air2 <- as.numeric(str_replace(two$Air, '%', ''))
+
+two_m1 <- lm(Ratings ~ Sweetner + MilkFat + Air + Sweetner:MilkFat + Sweetner:Air + MilkFat:Air + Sweetner:MilkFat:Air, data=two)
+
+Anova(two_m1, type="III")
+
+two_c1 <- coefficients(two_m1)
+two_s1 <- summary(two_m1)
+two_ci1 <- as_tibble(confint(two_m1, level=0.95))
+two_t1 <- as_tibble(two_s1[[4]])
+
+two_m2 <- lm(Ratings ~ Sweetner2 + MilkFat2 + Air2 + Sweetner2:MilkFat2 + Sweetner2:Air2 + MilkFat2:Air2 + Sweetner2:MilkFat2:Air2, data=two)
+two_c2 <- coefficients(two_m2)
+two_s2 <- summary(two_m2)
+two_ci2 <- as_tibble(confint(two_m2, level=0.95))
+two_t2 <- as_tibble(two_s2[[4]])
+```
+
+## SBP example
+
+The following data are systolic blood pressure (*Y*), sex (*X*<sub>1</sub>), and age (*X*<sub>2</sub>) for a sample of 69 adults. 
+
+```{r, warning}
+# read in data
+two <- read_csv("/Volumes/GoogleDrive/My Drive/STA4234/R Markdown/SBP.csv")
+
+# we specify an interaction between two variables by joining them with a colon (:)
+two_m1 <- lm(sbp ~ age + male + age:male, data=two)
+two_c1 <- coefficients(two_m1)
+two_s1 <- summary(two_m1)
+two_ci1 <- as_tibble(confint(two_m1, level=0.95))
+two_t1 <- as_tibble(two_s1[[4]])
+```
+

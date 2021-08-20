@@ -1,0 +1,167 @@
+---
+title: 'STA4234: Chapter 8 Examples'
+date: "Last updated: `r Sys.Date()`"
+output: 
+  html_document:
+      toc: TRUE
+      toc_depth: 4
+      toc_float: TRUE
+always_allow_html: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(pander)
+
+### p.value.string v2
+# Update v2: added the formatting that turns of scientific notation
+# fixes the case when p = 0.0001 (instead of p=1e-4)
+# This function called p.value.string creates a string
+# to be used when reporting the p-value. It includes the p on the LHS.
+# You will likely place it in $$ to get the LaTeX math formatting.
+# This should be placed in an r code chunk in the beginning of your R markdown
+# This code chunk by itself shouldn't produce any result.
+# by Reid Ginoza
+
+p.value.string = function(p.value){
+  p.value <- round(p.value, digits=4)
+  if (p.value == 0) {
+    return("p < 0.0001")
+  } else {
+    return(paste0("p = ", format(p.value, scientific = F)))
+  }
+}
+
+# info about multiple regression in R here: https://www.statmethods.net/stats/regression.html
+
+```
+
+## Example 1
+
+The following data are weight ($Y$), height ($X_1$), and age ($X_2$) for a sample of 12 children. 
+
+```{r}
+wgt <- c(64, 71, 53, 67, 55, 58, 77, 57, 56, 51, 76, 68)
+hgt <- c(57, 59, 49, 62, 51, 50, 55, 48, 42, 42, 61, 57)
+age <- c(8, 10, 6, 11, 8, 7, 10, 9, 10, 6, 12, 9)
+
+one <- tibble(wgt, hgt, age)
+
+# create age^2 variable
+one$age2 <- one$age^2
+```
+
+### Model 1 (wgt ~ hgt + age + age2)
+
+```{r}
+one_m1 <- lm(wgt ~ hgt + age + age2, data=one)
+one_m1_coef <- coefficients(one_m1)
+```
+
+#### Model
+
+The resulting regression model is 
+\[ \hat{Y} = `r round(one_m1_coef[[1]], digits = 2)` + `r round(one_m1_coef[[2]], digits=2)`X_1 + `r round(one_m1_coef[[3]], digits=2)`X_2 `r round(one_m1_coef[[4]], digits=2)`X_2^2 \]
+
+#### Graph holding height constant
+
+```{r}
+# add variables containing y hat
+one$pred50_m1 <- one_m1_coef[[1]] + one_m1_coef[[2]]*50 + one_m1_coef[[3]]*one$age + one_m1_coef[[4]]*one$age2
+one$pred53_m1 <- one_m1_coef[[1]] + one_m1_coef[[2]]*53 + one_m1_coef[[3]]*one$age + one_m1_coef[[4]]*one$age2
+one$pred55_m1 <- one_m1_coef[[1]] + one_m1_coef[[2]]*55 + one_m1_coef[[3]]*one$age + one_m1_coef[[4]]*one$age2
+
+p <- ggplot(one, aes(x=age, y=wgt)) +
+  geom_point() +
+  geom_line(aes(y = pred50_m1), color = "black", linetype = "dashed") +
+  geom_line(aes(y = pred53_m1), color = "black", linetype = "dashed") +
+  geom_line(aes(y = pred55_m1), color = "black", linetype = "dashed") +
+  geom_text(aes(x = 12.5, y = 70.7, label = "height = 55")) + 
+  geom_text(aes(x = 12.5, y = 69.25, label = "height = 53")) +
+  geom_text(aes(x = 12.5, y = 67, label = "height = 50")) +
+  xlab("Age") + xlim(6, 13) +
+  ylab("Weight") +
+  theme_bw()
+
+p
+```
+
+#### ANOVA table
+
+```{r}
+one_anova_m1 <- anova(one_m1)
+```
+
+The corresponding ANOVA table is as follows
+
+`r pander(one_anova_m1, style='rmarkdown')`
+
+#### $R^2$ and $R^2_{\mbox{adj}}$
+
+```{r}
+one_summary_m1 <- summary(one_m1)
+```
+
+$R^2 = `r round(one_summary_m1$r.squared, digits = 4)`$ and $R^2_{\mbox{adj}} = `r round(one_summary_m1$adj.r.squared, digits = 4)`$
+
+### Model 2 (wgt ~ hgt + age)
+
+```{r}
+one_m2 <- lm(wgt ~ hgt + age, data=one)
+one_m2_coef <- coefficients(one_m2)
+
+one_m2_coef
+```
+
+#### Model 
+
+The resulting regression model is 
+\[ \hat{Y} = `r round(one_m2_coef[[1]], digits = 2)` + `r round(one_m2_coef[[2]], digits=2)`X_1 + `r round(one_m2_coef[[3]], digits=2)`X_2  \]
+
+#### Graph holding height constant
+
+```{r}
+# add variables containing y hat
+one$pred50_m2 <- one_m2_coef[[1]] + one_m2_coef[[2]]*50 + one_m2_coef[[3]]*one$age 
+one$pred53_m2 <- one_m2_coef[[1]] + one_m2_coef[[2]]*53 + one_m2_coef[[3]]*one$age 
+one$pred55_m2 <- one_m2_coef[[1]] + one_m2_coef[[2]]*55 + one_m2_coef[[3]]*one$age 
+
+p <- ggplot(one, aes(x=age, y=wgt)) +
+  geom_point() +
+  geom_line(aes(y = pred50_m2), color = "black", linetype = "dashed") +
+  geom_line(aes(y = pred53_m2), color = "black", linetype = "dashed") +
+  geom_line(aes(y = pred55_m2), color = "black", linetype = "dashed") +
+  geom_text(aes(x = 12.5, y = 71, label = "height = 55")) + 
+  geom_text(aes(x = 12.5, y = 69.5, label = "height = 53")) +
+  geom_text(aes(x = 12.5, y = 67.25, label = "height = 50")) +
+  xlab("Age") + xlim(6, 13) +
+  ylab("Weight") +
+  theme_bw()
+
+p
+```
+
+#### ANOVA table
+
+```{r}
+one_anova_m2 <- anova(one_m2)
+```
+
+The corresponding ANOVA table is as follows
+
+`r pander(one_anova_m2, style='rmarkdown')`
+
+#### $R^2$ and $R^2_{\mbox{adj}}$
+
+```{r}
+one_summary_m2 <- summary(one_m2)
+```
+
+$R^2 = `r round(one_summary_m2$r.squared, digits = 4)`$ and $R^2_{\mbox{adj}} = `r round(one_summary_m2$adj.r.squared, digits = 4)`$
+
+
+
+
+
+

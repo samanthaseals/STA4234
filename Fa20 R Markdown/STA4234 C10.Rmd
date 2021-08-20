@@ -1,0 +1,138 @@
+---
+title: 'STA4234: Chapter 10 Examples'
+date: "Last updated: `r Sys.Date()`"
+output: 
+  html_document:
+      toc: TRUE
+      toc_depth: 5
+      toc_float: TRUE
+always_allow_html: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(pander)
+library(Hmisc)
+library(ppcor)
+
+### p.value.string v2
+# Update v2: added the formatting that turns of scientific notation
+# fixes the case when p = 0.0001 (instead of p=1e-4)
+# This function called p.value.string creates a string
+# to be used when reporting the p-value. It includes the p on the LHS.
+# You will likely place it in $$ to get the LaTeX math formatting.
+# This should be placed in an r code chunk in the beginning of your R markdown
+# This code chunk by itself shouldn't produce any result.
+# by Reid Ginoza
+
+p.value.string = function(p.value){
+  p.value <- round(p.value, digits=4)
+  if (p.value == 0) {
+    return("p < 0.0001")
+  } else {
+    return(paste0("p = ", format(p.value, scientific = F)))
+  }
+}
+```
+
+The following data are weight ($Y$), height ($X_1$), and age ($X_2$) for a sample of 12 children. 
+
+```{r}
+wgt <- c(64, 71, 53, 67, 55, 58, 77, 57, 56, 51, 76, 68)
+hgt <- c(57, 59, 49, 62, 51, 50, 55, 48, 42, 42, 61, 57)
+age <- c(8, 10, 6, 11, 8, 7, 10, 9, 10, 6, 12, 9)
+
+one <- tibble(wgt, hgt, age)
+
+# create age^2 variable
+one$age2 <- one$age^2
+```
+
+### Correlation Matrix:
+
+```{r}
+corr_one <- cor(one)
+```
+
+`r pander(corr_one, style='rmarkdown')`
+
+
+### Correlation Matrix with *t* Tests:
+
+```{r}
+# the rcorr() function requires the data be entered as a matrix, not a tibble (or data frame). the as.matrix() function will convert a tibble to a matrix for us
+one_matrix <- as.matrix(one)
+
+# the rcorr() function will find both the correlation matrix and the p-values associated with testing rho=0 (the t-test)
+corr_one_t <- rcorr(one_matrix)
+```
+
+The correlation between weight and height is statistically significant ($r=`r round(corr_one_t$r[1,2], digits = 3)`$, $p=`r round(corr_one_t$P[1,2], digits = 3)`$) and the correlation between weight and age is statistically significant ($r=`r round(corr_one_t$r[1,3], digits = 3)`$, $p=`r round(corr_one_t$P[1,3], digits = 3)`$).
+
+### Multiple Correlation Coefficient -- M1
+
+```{r}
+one_m1 <- lm(wgt ~ hgt + age + age2, data=one)
+one_anova_m1 <- anova(one_m1)
+one_summary_m1 <- summary(one_m1)
+
+one_anova_m1
+```
+
+The corresponding ANOVA table is as follows (we need SSReg and SSTot) to compute by hand. 
+
+`r pander(one_anova_m1, style='rmarkdown')`
+
+Note: we add the SS for hgt, age, and age2 to find SSReg; then we add SSE to that to find SSTot.
+
+$R^2 = `r round(one_summary_m1$r.squared, digits = 6)`$; the multiple correlation coefficient is the square root, or `r round(sqrt(one_summary_m1$r.squared), digits = 6)`.
+
+### Multiple Correlation Coefficient -- M2
+
+```{r}
+one_m2 <- lm(wgt ~ hgt + age, data=one)
+one_anova_m2 <- anova(one_m2)
+one_summary_m2 <- summary(one_m2)
+```
+
+The corresponding ANOVA table is as follows (we need SSReg and SSTot) to compute by hand. 
+
+`r pander(one_anova_m2, style='rmarkdown')`
+
+Note: we add the SS for hgt, age, and age2 to find SSReg; then we add SSE to that to find SSTot.
+
+$R^2 = `r round(one_summary_m2$r.squared, digits = 6)`$; the multiple correlation coefficient is the square root, or `r round(sqrt(one_summary_m2$r.squared), digits = 6)`.
+
+### Partial Correlation
+
+```{r}
+
+# the pcor() function allows us to compute partial correlation. if we include all variables, it will find higher-order correlations. right now, we only want the first order correlation. in particular, we want the first order correlation between weight and age after adjusting for height. thus, we will leave age^2 out of the data.
+one <- tibble(wgt, hgt, age)
+
+# obtain first order correlations
+first <- pcor(one)
+
+# create age^2 variable
+one$age2 <- one$age^2
+
+# now, we are interested in second-order partial correlations. in particular, we want the correlation between weight and height after adjusting for both age and age^2. this will, however, obtain all second order correlations.
+second <- pcor(one)
+
+# in the resulting "estimate" matrices, the first column indicates what R treated as the Y variable and the other columns are X, with the others as the C_i (e.g., in the second order correlation matrix, wgt, hgt is Y=wgt, X=hgt, C_1=age, C_2=age^2)
+```
+
+The first order correlation between weight and age after adjusting for height is `r round(first$estimate[1,3], digits = 3)`.
+
+The second order correlation between weight and height after adjusting for age and age$^2$ is `r round(second$estimate[1,2], digits = 3)`.
+
+### Extra Credit Opportunity 1
+
+How do we test the above correlations?
+
+### Extra Credit Opportunity 2
+
+How do we find multiple partial correlations in R? 
+
+

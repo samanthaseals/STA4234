@@ -1,0 +1,164 @@
+---
+title: 'STA4234: Chapter 14 Examples'
+date: "Last updated: `r Sys.Date()`"
+output: 
+  html_document:
+      toc: TRUE
+      toc_depth: 5
+      toc_float: TRUE
+always_allow_html: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE)
+library(tidyverse)
+library(pander)
+library(car)
+library(lindia)
+
+### p.value.string v2
+# Update v2: added the formatting that turns of scientific notation
+# fixes the case when p = 0.0001 (instead of p=1e-4)
+# This function called p.value.string creates a string
+# to be used when reporting the p-value. It includes the p on the LHS.
+# You will likely place it in $$ to get the LaTeX math formatting.
+# This should be placed in an r code chunk in the beginning of your R markdown
+# This code chunk by itself shouldn't produce any result.
+# by Reid Ginoza
+
+p.value.string = function(p.value){
+  p.value <- round(p.value, digits=4)
+  if (p.value == 0) {
+    return("p < 0.0001")
+  } else {
+    return(paste0("p = ", format(p.value, scientific = F)))
+  }
+}
+
+almost_sas <- function(aov.results){
+  par(mfrow=c(2,2))
+  plot(aov.results, which=1)
+  plot(aov.results, which=2)
+  aov_residuals <- residuals(aov.results)
+  plot(density(aov_residuals))
+  hist(aov_residuals)
+}
+```
+
+## HuMoSim Example
+
+Let's explore the concepts discussed today. 
+
+```{r}
+one <- read_csv("/Volumes/GoogleDrive/My Drive/STA4234/R Markdown/driver.csv")
+
+# create ID variable
+one <- mutate(one, obs = row_number())
+```
+
+### Correlation
+
+Let's look at the correlation between the variables. Are there any correlations that are abnormally high and we should be worried about?
+
+```{r}
+pander(cor(one), style='rmarkdown')
+```
+
+### Model 1
+Let's construct a basic model with only main effects.
+
+```{r}
+m1 <- lm(weight	~ age + htshoes +	ht + seated + arm + thigh + leg, data=one)
+pander(summary(m1), style='rmarkdown')
+```
+
+#### VIF
+Now, let's check the VIF of that model:
+
+```{r}
+pander(vif(m1), style='rmarkdown')
+```
+
+Should we adjust our model?
+
+### Model 2
+
+```{r}
+# Edit the following model as necessary:
+#m2 <- lm(weight	~ age + htshoes +	ht + seated + arm + thigh + leg, data=one)
+#pander(summary(m2, style='rmarkdown'))
+#pander(vif(m2), style='rmarkdown')
+```
+
+Should we adjust our model?
+
+### Model 3
+
+```{r}
+# Edit the following model as necessary:
+#m3 <- lm(weight	~ age + htshoes +	ht + seated + arm + thigh + leg, data=one)
+#pander(summary(m3, style='rmarkdown'))
+#pander(vif(m3), style='rmarkdown')
+```
+
+Should we adjust our model?
+
+#### R Student
+
+Let's check the studentized residuals (note: in R they are called standardized residuals; R uses "studentized" to describe another type of residual, the jackknife residual).
+
+```{r}
+pander(rstandard(m3), style='rmarkdown')
+```
+
+Should we investigate any points?
+
+#### Cook's D
+
+Let's check influence/leverage using Cook's distance. 
+
+```{r}
+gg_cooksd(m3) + theme_bw()
+```
+
+Are there any points we should investigate? 
+
+#### Model Assumptions
+
+Let's check the model assumptions. Remember, we assume that the residuals are normally distributed with mean 0 and a common variance. We should use the scatterplot (top left) to assess variance, the Q-Q plot (top right) to assess normality, and the density/histogram (bottom row) to further assess normality.
+
+```{r}
+almost_sas(m3)
+```
+
+What are your thoughts? Are the assumptions met (roughly)?
+
+### Model 4 
+
+Reconstruct M3 without the points identified as issues.
+
+
+```{r}
+# Exclude the potential issue datapoints
+#one_m4 <- filter(one, obs != 1 & obs != 2 & ...)
+#m4 <- lm(weight	~ age + seated + arm + thigh + leg, data=one_m4)
+#pander(summary(m3), style='rmarkdown')
+#pander(summary(m4), style='rmarkdown')
+```
+
+How different are the results?
+
+#### Diagnostics
+
+Remember: we only check diagnostics once. If we continue to re-evaluate, we will continue to find issue points (and will whittle down our dataset such that it is no longer generalizable to the initial population of interest).
+
+#### Model Assumptions
+
+Let's check the model assumptions. 
+
+```{r}
+almost_sas(m4)
+```
+
+What are your thoughts? Are the assumptions met (roughly)?
+
