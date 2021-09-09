@@ -11,7 +11,7 @@ always_allow_html: true
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
-library(googlesheets4)
+library(gsheet)
 ```
 
 ## Data from 14.22 and 14.23
@@ -29,7 +29,7 @@ In an analysis of daily soil evaporation (EVAP), Freund (1979) identified the fo
     WIND: Total wind, measured in miles per day
 
 ```{r}
-data <- read_sheet("https://docs.google.com/spreadsheets/d/1GZeDx6LZNML2MURS6Nl2ap3V9WQQRCFX-GPkZwHzEqo/edit?usp=sharing")
+data <- as_tibble(gsheet2tbl("https://docs.google.com/spreadsheets/d/1GZeDx6LZNML2MURS6Nl2ap3V9WQQRCFX-GPkZwHzEqo/edit?usp=sharing")
 ```
 
 
