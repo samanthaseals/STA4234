@@ -19,5 +19,5 @@ library(gsheet)
 The following data gives the systolic blood pressure (sbp), body size (quet), age (age), and smoking history (smk=0 if a nonsmoker, smk=1 if a current or previous smoker) for a hypothetical sample of 32 white males over 40 years old from the town of Angina.
 
 ```{r}
-data <- as_tibble(gsheet2tbl("https://docs.google.com/spreadsheets/d/1Nvns8qzuhvjG-k_zkDj1FMiV3UE2eZgXeee7i0HDPSs/edit#gid=0")
+data <- as_tibble(gsheet2tbl("https://docs.google.com/spreadsheets/d/1Nvns8qzuhvjG-k_zkDj1FMiV3UE2eZgXeee7i0HDPSs/edit#gid=0"))
 ```
