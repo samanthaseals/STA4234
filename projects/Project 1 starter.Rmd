@@ -1,0 +1,92 @@
+---
+title: 'STA4234: Project 1'
+author: 'Your Name Here'
+date: 'Last updated: `r Sys.Date()`'
+output:
+  html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE)
+
+# pull in packages we need
+library(gsheet)
+library(tidyverse)
+library(ggpubr)
+
+# NOTE 1 -- if you have not been engaging with R prior to this project, you may need to install packages.
+
+# NOTE 2 -- you do *not* need to edit anything below this note in the code chunk. All of the data management has been done for you. Once you confirm that the data has pulled in properly, you are ready to begin the project.
+
+options(scipen = 999)
+
+# call in data
+data <- as_tibble(gsheet2tbl("https://docs.google.com/spreadsheets/d/1H3TP-2SBMGleriJLESOe1cdCjtSj2F76bUh5iBqC8tI"))
+
+# keep the variables of interest
+data <- data %>% select(subjid, sbp, age, sex, BMI, HbA1c, perceivedStress, lifetimeDiscrm)
+
+# keep complete cases
+data <- na.omit(data)
+```
+
+
+#### 1. Construct the correlation matrix for all variables in the dataset. Looking at the correlations between systolic blood pressure (<span style="font-family:Courier;">sbp</span>) and the others, what potential relationships do you see?
+
+#### 2. Construct the regression model that models systolic blood pressure (<span style="font-family:Courier;">sbp</span>) as a function of age (<span style="font-family:Courier;">age</span>), sex (<span style="font-family:Courier;">sex</span>), body mass index (<span style="font-family:Courier;">BMI</span>), hemoglobin A1c (<span style="font-family:Courier;">HbA1c</span>), perceived stress (<span style="font-family:Courier;">perceivedStress</span>), and lifetime discrimination (<span style="font-family:Courier;">lifetimeDiscrm</span>). This is model 1 (M1).
+
+Fill in for the $\hat{\beta}_i$ below based on your model (and delete this sentence):
+
+\[ \hat{Y} = \hat{\beta}_{\text{age}} X_{\text{age}} + \hat{\beta}_{\text{BMI}} X_{\text{BMI}} + \hat{\beta}_{\text{HbA1c}} X_{\text{HbA1c}} + \hat{\beta}_{\text{stress}} X_{\text{stress}} + \hat{\beta}_{\text{discrimination}} X_{\text{discrimination}} \]
+
+#### 3. Use the appropriate hypothesis test to show that perceived stress and lifetime discrimination can be removed from the model simultaneously. Test at the $\alpha=0.05$ level. 
+
+Please use the following to format all hypothesis tests (and delete this sentence):
+
+**Hypotheses**
+
+&emsp;&emsp; $H_0:$ null here (note that Greek letters are inserted like this: $\mu$ $\beta$ $\sigma$ etc.) <br>
+&emsp;&emsp; $H_1:$  alternative here
+
+**Test Statistic**
+
+&emsp;&emsp; $F_0$ = insert your test statistic here.
+
+***p*-value**
+
+&emsp;&emsp; $p$ = insert your p-value here.
+
+**Rejection Region**
+
+&emsp;&emsp; Reject if $p < \alpha$, where $\alpha=0.05$.
+
+**Conclusion and Interpretation**
+
+&emsp;&emsp; Reject or Fail to reject $H_0$. There is (or is not) sufficient evidence to suggest that .... (the alternative in words)
+
+#### 4. Reconstruct the regression model *without* perceived stress (<span style="font-family:Courier;">perceivedStress</span>) and lifetime discrimination (<span style="font-family:Courier;">lifetimeDiscrm</span>). This is model 2 (M2).
+
+Fill in for the $\hat{\beta}_i$ below based on your model (and delete this sentence):
+
+\[ \hat{Y} = \hat{\beta}_{\text{age}} X_{\text{age}} + \hat{\beta}_{\text{BMI}} X_{\text{BMI}} + \hat{\beta}_{\text{HbA1c}} X_{\text{HbA1c}} \]
+
+#### 5. Find $R^2_{\text{adj}}$ for both models and provide interpretations. Does $R^2_{\text{adj}}$ support our decision to remove perceived stress and lifetime discrimination from the model?
+
+#### 6. Use the appropriate hypothesis test to determine if model 2 is a significant regression model. (i.e., is at least one slope non-zero?)  Test at the $\alpha=0.05$ level.
+
+Remember to grab the formal hypothesis testing formatting from the previous question (and delete this sentence).
+
+#### 7. Create a table containing the estimated slope, 95% confidence interval, $t$ statistic, and $p$-value for each predictor in M2.
+
+|       | **$\hat{\beta}$ (95% CI)** | **$t$** | **$p$-value** |
+|-------|---------------------------------------------|-----------------|--------------------------------|
+| Age   |      |      |       |
+| Sex   |      |      |       |
+| BMI   |      |      |       |
+| HbA1c |      |      |       |
+
+#### 8. Based on your results in Q05, which, if any, are significant predictors of systolic blood pressure? You do not need to provide the formal hypothesis test for each predictor, however, you must justify your response.
+
+#### 9. Provide a brief interpretation for the relationship between age and systolic blood pressure.
+
+#### BONUS. Graph the regression line for males (<span style="font-family:Courier;">sex = 1</span>) with a BMI of 30 (<span style="font-family:Courier;">BMI = 1</span>) and HbA1c of 5.9 (<span style="font-family:Courier;">HbA1c = 5.9</span>). Include the confidence and prediction bands.
