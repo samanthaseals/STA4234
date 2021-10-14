@@ -37,7 +37,7 @@ data <- na.omit(data)
 
 Fill in for the $\hat{\beta}_i$ below based on your model (and delete this sentence):
 
-\[ \hat{Y} = \hat{\beta}_{\text{age}} X_{\text{age}} + \hat{\beta}_{\text{BMI}} X_{\text{BMI}} + \hat{\beta}_{\text{HbA1c}} X_{\text{HbA1c}} + \hat{\beta}_{\text{stress}} X_{\text{stress}} + \hat{\beta}_{\text{discrimination}} X_{\text{discrimination}} \]
+\[ \hat{Y} = \hat{\beta}_0 + \hat{\beta}_{\text{age}} X_{\text{age}} + \hat{\beta}_{\text{sex}} X_{\text{sex}} + \hat{\beta}_{\text{BMI}} X_{\text{BMI}} + \hat{\beta}_{\text{HbA1c}} X_{\text{HbA1c}} + \hat{\beta}_{\text{stress}} X_{\text{stress}} + \hat{\beta}_{\text{discrimination}} X_{\text{discrimination}} \]
 
 #### 3. Use the appropriate hypothesis test to show that perceived stress and lifetime discrimination can be removed from the model simultaneously. Test at the $\alpha=0.05$ level. 
 
@@ -85,7 +85,7 @@ Remember to grab the formal hypothesis testing formatting from the previous ques
 | BMI   |      |      |       |
 | HbA1c |      |      |       |
 
-#### 8. Based on your results in Q05, which, if any, are significant predictors of systolic blood pressure? You do not need to provide the formal hypothesis test for each predictor, however, you must justify your response.
+#### 8. Based on your results in the table above, which, if any, are significant predictors of systolic blood pressure? You do not need to provide the formal hypothesis test for each predictor, however, you must justify your response.
 
 #### 9. Provide a brief interpretation for the relationship between age and systolic blood pressure.
 
