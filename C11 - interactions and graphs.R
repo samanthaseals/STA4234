@@ -79,12 +79,12 @@ ggplot(one, aes(x=age, y=sbp, color=male_fac)) +
 two <- as_tibble(gsheet2tbl("https://docs.google.com/spreadsheets/d/1QH5XDEUEmBGp2ZzO7OQS0T1vSELIjFAi2gTmnqokoMg/edit#gid=0"))
 
 # want to treat the predictors as continuous, but R read them in as factors 
-two$Sweetner <- str_remove(data$Sweetner, "[%]")
-  two$Sweetner <- as.numeric(data$Sweetner)
-two$MilkFat <- str_remove(data$MilkFat, "[%]")
-  two$MilkFat <- as.numeric(data$MilkFat)
-two$Air <- str_remove(data$Air, "[%]")
-  two$Air <- as.numeric(data$Air)
+two$Sweetner <- str_remove(two$Sweetner, "[%]")
+  two$Sweetner <- as.numeric(two$Sweetner)
+two$MilkFat <- str_remove(two$MilkFat, "[%]")
+  two$MilkFat <- as.numeric(two$MilkFat)
+two$Air <- str_remove(two$Air, "[%]")
+  two$Air <- as.numeric(two$Air)
 
 m1 <- lm(Ratings ~ Sweetner + MilkFat + Air + Sweetner:MilkFat + Sweetner:Air + MilkFat:Air + Sweetner:MilkFat:Air, data=two)
 
