@@ -1,7 +1,7 @@
 library(tidyverse)
 library(car)
 library(lindia)
-library(googlesheets4)
+library(gsheet)
 
 # define function to graph ANOVA assumptions
 # written by previous student Reid Ginoza
@@ -16,7 +16,7 @@ almost_sas <- function(aov.results){
 
 ## HuMoSim Example
 
-one <- read_sheet("https://docs.google.com/spreadsheets/d/1LRFlQuBcLrP0N2dxpBiUvEeqendWFhV0tz7o_OSDOOw/edit#gid=0")
+one <- as_tibble(gsheet2tbl("https://docs.google.com/spreadsheets/d/1LRFlQuBcLrP0N2dxpBiUvEeqendWFhV0tz7o_OSDOOw/edit#gid=0"))
 
 # create ID variable
 one <- mutate(one, obs = row_number())
