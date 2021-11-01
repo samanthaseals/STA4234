@@ -21,10 +21,17 @@ summary(m1)
 m2 <- multinom(food ~ 1, data = data)
 anova(m2, m1)
 
+# find odds ratios
+coefficients(m1) # plain model terms
+exp(coefficients(m1)) # exponentiate for OR
+
 # get test for significant predictors out using coeftest()
 coeftest(m1)
 
 # 95% confidence intervals for model terms
 confint(m1)
+
+# 95% confidence intervals for OR
+exp(confint(m1))
 
 
