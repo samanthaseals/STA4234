@@ -1,0 +1,51 @@
+---
+title: 'STA4234: Project 2'
+author: 'Your Name Here'
+date: 'Last updated: `r Sys.Date()`'
+output:
+  html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE)
+
+# pull in packages we need
+library(gsheet)
+library(tidyverse)
+
+# NOTE 1 -- if you have not been engaging with R prior to this project, you may need to install packages.
+
+# NOTE 2 -- you do *not* need to edit anything below this note in the code chunk. All of the data management has been done for you. Once you confirm that the data has pulled in properly, you are ready to begin the project.
+
+options(scipen = 999)
+
+# call in data
+data <- as_tibble(gsheet2tbl("https://docs.google.com/spreadsheets/d/1H3TP-2SBMGleriJLESOe1cdCjtSj2F76bUh5iBqC8tI"))
+
+# keep the variables of interest
+data <- data %>% select(subjid, sbp, age, sex, BMI, HbA1c)
+
+# keep complete cases
+data <- na.omit(data)
+```
+
+
+#### 1. Recall the final model from P1. It included \texttt{age}, \texttt{sex}, \texttt{BMI}, and \texttt{HbA1c} as predictors. Update the model to examine all possible two-way interactions. Report the full model here.
+
+#### 2. Perform what is called *backwards selection*: take out the interaction terms one-by-one, starting with the largest non-significant *p*-value. Stop when all interaction terms are significant. You do not need to write out the formal hypothesis tests, but (mentally) test at the &alpha; = 0.05 level. For your response to this question, list the order in which you removed the interaction terms as well as the *p*-value at time of removal.
+
+#### 3. Report your final model resulting from the backward selection performed in question 2.
+
+#### 4. Check for multicollinearity present among predictors. Explain why it is or is not present.
+
+#### 5. Check for outliers. How many potential outliers exist? 
+
+#### 6. Check for influence/leverage points. How many potential influence leverage observations exist? What are their observation numbers?
+
+#### 7. Check the regression assumptions using the graphical approach. Are they met? Why or why not?
+
+#### 8. Plug in the median value for age, BMI, and HbA1c and report the model only in terms of sex. Provide an interpretation for the resulting slope.
+
+#### 9. Plug in the median value for age and HbA1c, and report the model for females only in terms of BMI. Provide an interpretation for the resulting slope.
+
+#### 10. Construct a graph with SBP on the *y*-axis and BMI on the *x*-axis. You will create regression lines using biological sex (so one line for males and one line for females). Plug in the median value for each age and HbA1c.
