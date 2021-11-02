@@ -18,6 +18,7 @@ data <- as_tibble(gsheet2tbl("https://docs.google.com/spreadsheets/d/1qpyN390as_
 
 # try linear regression with normal distribution
 m1 <- lm(sat ~ width, data=data)
+summary(m1)
 almost_sas(m1)
 
 #### POISSON REGRESSION ####
@@ -53,13 +54,13 @@ m2 <- glm.nb(sat ~ width, data=data)
 summary(m2)
 
 # beta hats
-coefficients(m1)
+coefficients(m2)
 
 # incident rate ratios
-exp(coefficients(m1))
+exp(coefficients(m2))
 
 # 95% confidence intervals for beta
-confint(m1)
+confint(m2)
 
 # 95% confidence intervals for incident rate ratios
-exp(confint(m1))
+exp(confint(m2))
