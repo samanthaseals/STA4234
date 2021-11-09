@@ -1,0 +1,26 @@
+---
+title: 'STA4234: Homework Starter'
+output: 
+  html_document:
+      toc: TRUE
+      toc_depth: 4
+      toc_float: TRUE
+always_allow_html: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(palmerpenguins)
+library(gsheet)
+```
+
+## Data from the political ideology example.
+
+```{r}
+# pull in data
+data <- as_tibble(gsheet2tbl("https://docs.google.com/spreadsheets/d/1Q8ZS-umaaSHbPA3gGEy-UConGON_1_oNR_O6Wpsf7bE/edit?usp=sharing"))
+
+# turn outcome into a factor variable (with order)
+data$Ideology <- as.factor(data$Ideology)
+```
