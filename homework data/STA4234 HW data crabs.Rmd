@@ -1,0 +1,33 @@
+---
+title: 'STA4234: Homework Starter'
+output: 
+  html_document:
+      toc: TRUE
+      toc_depth: 4
+      toc_float: TRUE
+always_allow_html: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(gsheet)
+library(tidyverse)
+
+# define function to graph ANOVA assumptions
+# written by previous student Reid Ginoza
+almost_sas <- function(aov.results){
+  aov_residuals <- residuals(aov.results)
+  par(mfrow=c(2,2))
+  plot(aov.results, which=1)
+  hist(aov_residuals)
+  plot(aov.results, which=2)
+  plot(density(aov_residuals))
+}
+```
+
+## Data from the horseshoe crab example.
+
+```{r}
+# pull in data
+data <- as_tibble(gsheet2tbl("https://docs.google.com/spreadsheets/d/1qpyN390as_hbJul46yVH7V6Qj-gLiSlhkX4clE5FppU/edit?usp=sharing"))
+```
