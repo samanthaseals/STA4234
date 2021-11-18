@@ -1,0 +1,80 @@
+---
+title: 'STA4234: Project 3'
+author: 'Your Name Here'
+date: 'Last updated: `r Sys.Date()`'
+output:
+  html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE)
+
+# pull in packages we need
+library(gsheet)
+library(tidyverse)
+library(MASS)
+library(fastDummies)
+
+# NOTE 1 -- if you have not been engaging with R prior to this project, you may need to install packages.
+
+# NOTE 2 -- you do *not* need to edit anything below this note in the code chunk. All of the data management has been done for you. Once you confirm that the data has pulled in properly, you are ready to begin the project.
+
+options(scipen = 999)
+
+# call in data
+data <- as_tibble(gsheet2tbl("https://docs.google.com/spreadsheets/d/1spsd94lLVgltT2MQvmMHW3dZ3cxW2WSEq_YJ6x8e3yM/edit?usp=sharing"))
+
+data$drinks_month <- round(data$alcw*4)
+
+data$smoking <- ifelse(data$currentSmoker == "Yes", "Current Smoker",
+                       ifelse(data$currentSmoker == "No" & data$everSmoker == "Yes", "Former Smoker",
+                              ifelse(data$everSmoker == "No", "Never Smoker", NA)))
+
+data$dm3 <- ifelse(data$diab3cat == "Non-Diabetic", "1 - Not Diabetic",
+                   ifelse(data$diab3cat == "Pre-Diabetic", "2 - Pre-Diabetic",
+                          ifelse(data$diab3cat == "Diabetic", "3 - Diabetic", NA)))
+
+data$dm3 <- as.factor(data$dm3)
+
+# keep complete cases
+data <- na.omit(data)
+```
+
+
+#### 1. Model the number of alcoholic drinks per month (<span style="font-family:Courier;">drinks_month</span>). 
+
+#### 1a. What is the resulting model? Make sure you are specifying the left hand side of the model correctly given your model.
+
+#### 1b. Justify why you selected this modeling approach.
+
+#### 1c. Provide a brief interpretation for age. 
+
+#### 1d. Provide brief interpretations for smoking status.
+
+#### 1e. Which, if any, are significant predictors of number of alcoholic drinks per month? 
+    
+#### 2. Model hypertension (<span style="font-family:Courier;">HTN</span> -- use those without hypertension as the reference).
+    
+#### 2a. What is the resulting model? Make sure you are specifying the left hand side of the model correctly given your model.
+    
+#### 2b. Justify why you selected this modeling approach.
+
+#### 2c. Provide a brief interpretation for age. 
+
+#### 2d. Provide brief interpretations for income.
+
+#### 2e. Which, if any, are significant predictors of hypertension? 
+
+#### 3. Model diabetic status (<span style="font-family:Courier;">dm3</span> -- use those without diabetes as the reference).
+
+#### 3a. What is the resulting model? Make sure you are specifying the left hand side of the model correctly given your model.
+
+#### 3b. Justify why you selected this modeling approach.
+
+#### 3c. Provide a brief interpretation for age. 
+
+#### 3d. Provide a brief interpretation (or interpretations) for education.
+
+#### 3e. Which, if any, are significant predictors of diabetic status? 
+
+
