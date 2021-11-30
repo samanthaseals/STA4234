@@ -1,0 +1,89 @@
+---
+title: 'STA4234: Final Exam (Take Home)'
+author: 'Your Name Here'
+date: 'Last updated: `r Sys.Date()`'
+output:
+  html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE)
+
+# pull in packages we need
+library(gsheet)
+library(tidyverse)
+
+options(scipen = 999)
+
+# call in data
+data <- as_tibble(gsheet2tbl("https://docs.google.com/spreadsheets/d/1Kjtlt4KSSRXHF1PtYvWFzOaOZNsys9dMh8HqDT6PTEw"))
+```
+
+### 1. Model the ideal number of children for a family to have using linear regression under the normal distribution. Include years of education, marital status (use never married as the reference group), sex, and all possible two-way interactions as predictors.
+
+#### a. State the resulting model.
+
+#### b. Use the appropriate statistical test(s) to determine if we remove all interactions at the same time.
+
+#### c. If we can remove all interactions at the same time, do so. If we cannot remove all interactions at the same time, use backwards selection to remove interactions one at a time until one or more interactions are significant. State your "final model." Use this model to answer the rest of the questions for problem 1.
+
+#### d. Provide an appropriate interpretation for the slope of years of education.
+
+#### e. Provide an appropriate interpretation for the slope of divorced or separated females.
+
+#### f. Provide an appropriate interpretation for the slope of divorced or separated males.
+
+#### g. Are there any significant predictors of the ideal number of children for a family to have?
+
+#### h. Formally check for multicollinearity. Are there any issues?
+
+#### i. Formally check for outliers. How many observations are suspected outliers?
+
+#### j. Formally check for influence/leverage points. How many observations are suspected influence/leverage points?
+
+#### k. Construct an appropriate visualization to help you explain a relationship in the data. 
+
+#### l. Visually assess the regression assumptions. Explain why the normal distribution is **not** appropriate to use here.
+    
+### 2. Construct the appropriate model (using the appropriate distribution) to model the ideal number of children for a family to have. Include years of education, marital status (use never married as the reference group), sex, and all possible two-way interactions as predictors.
+    
+#### a. State the resulting model.
+
+#### b. Use the appropriate statistical test(s) to determine if we remove all interactions at the same time. Hint: use the test = "LRT" option.
+
+#### c. If we can remove all interactions at the same time, do so. If we cannot remove all interactions at the same time, use backwards selection to remove interactions one at a time until one or more interactions are significant. State your "final model." Use this model to provide the rest of the questions for problem 2.
+ 
+#### d. Provide an appropriate interpretation for the slope of years of education.
+
+#### e. Provide an appropriate interpretation for the slope of divorced or separated females.
+
+#### f. Provide an appropriate interpretation for the slope of divorced or separated males.
+
+#### g. Are there any significant predictors of the ideal number of children for a family to have?
+
+#### h. How is this model different from the final model in question 1? Are you drawing similar conclusions?
+
+#### i. BONUS: Construct an appropriate visualization to help you explain a relationship in the data.
+
+### 3. Construct the appropriate model (using the appropriate distribution) to model the response to the number of ideal children being 0, 1, 2 vs. 3, 4, 5, 6, 7. Include years of education, marital status (use never married as the reference group), sex, and all possible two-way interactions as predictors.
+
+#### a. State the resulting model.
+
+#### b. Use the appropriate statistical test(s) to determine if we remove all interactions at the same time. Hint: use the test = "LRT" option.
+
+#### c. If we can remove all interactions at the same time, do so. If we cannot remove all interactions at the same time, use backwards selection to remove interactions one at a time until one or more interactions are significant. State your "final model." Use this model to provide the rest of the questions for problem 3.
+
+#### d. Provide an appropriate interpretation for the slope of years of education.
+
+#### e. Provide an appropriate interpretation for the slope of divorced or separated females.
+
+#### f. Provide an appropriate interpretation for the slope of divorced or separated males.
+
+#### g. Are there any significant predictors of someone indicating the ideal number of children is more than 2?
+
+#### h. How does the conclusions drawn from this model compare to the conclusions drawn from the previous two models? Are you drawing similar conclusions? 
+
+#### i. BONUS: Construct an appropriate visualization to help you explain a relationship in the data.
+
+
+
