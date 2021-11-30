@@ -165,3 +165,47 @@ ggarrange(p1, p2, ncol=2)
 By putting the graphs side by side, we can easily see the differences between the expected values. 
 
 Note that these were "automatically" on the same scale for the *y*-axis ... in the event that the scales were not the same, we should go back and force the graphs to have the same scale. Without the graphs being on the same scale, we cannot easily compare the two models/graphs.
+
+
+## How to Create Dummy Variables and Specify Reference Groups
+
+Now we will learn how to create our own dummy variables for variables that are not given to us in 0/1 format.
+```{r}
+# create dummy vars
+data <- dummy_cols(data, select_columns = c("Sweetner", "MilkFat", "Air"))
+# this creates dummy variables for all of the variables specified
+# it will create a column for each level of the variable
+# e.g., sweetner will have sweetner_12% and sweetner_16%
+
+# look at variable names
+colnames(data)
+```
+
+The dummy_cols() function (from the fastDummies package) creates the dummy variables automatically for us. It creates literally one variable for each level of the variable. For example, sweetner has two levels: 12% and 16%. There are now two additional variables: Sweetner_12% and Sweetner_16%. Note that R does not like special characters in the variable names, so for us to be able to appropriately call the variable, we must put back ticks (`) around the variable name.
+
+To specify one of the groups as the reference group, we exclude that variable from the model. For example, if we specify the lowest level of each of the factors as the reference groups, we will exclude Sweetner_12%, MilkFat_10%, and Air_5%. That means that we will include the others: Sweetner_16%, MilkFat_12%, MilkFat_15%, Air_10%, and Air_15%.
+
+```{r}
+m1 <- lm(Ratings ~ `Sweetner_16%` + `MilkFat_12%` + `MilkFat_15%` + `Air_10%` + `Air_15%`, data=data)
+summary(m1)
+```
+
+When specifying interaction terms, we must specify pairwise terms. Suppose that we are interested in the interaction between sweetner and air. We will include all pairs: Sweetner_16%:Air_10% and Sweetner_16%:Air_15%. Note that as the number of levels in a categorical predictor increases, the number of pairs that need to be specified also increases. 
+```{r}
+m1 <- lm(Ratings ~ `Sweetner_16%` + `MilkFat_12%` + `MilkFat_15%` + `Air_10%` + `Air_15%`
+         + `Sweetner_16%`:`Air_10%` + `Sweetner_16%`:`Air_15%`, data=data)
+summary(m1)
+```
+
+Finally, if we want to test the global significance of the interaction (i.e., the generic "is this interaction significant?"), we must use a multiple partial F test. The full model will contain all predictors, including interaction terms. The reduced model will have the interaction terms of interest removed. Note that if you need to test multiple interactions (e.g., the interaction between sweetner and air and, separately, the interaction between air and milk fat), you will constuct two tests (i.e., two "reduced" models).
+```{r}
+full <- lm(Ratings ~ `Sweetner_16%` + `MilkFat_12%` + `MilkFat_15%` + `Air_10%` + `Air_15%`
+         + `Sweetner_16%`:`Air_10%` + `Sweetner_16%`:`Air_15%`, data=data)
+reduced <- lm(Ratings ~ `Sweetner_16%` + `MilkFat_12%` + `MilkFat_15%` + `Air_10%` + `Air_15%`, data=data)
+anova(reduced, full)
+```
+
+Once we confirm that an interaction is significant at the global level, we can do posthoc testing to determine if specific comparisons are significant (i.e., the individual *t*-test from the summary() function).
+```{r}
+summary(m1)
+```
