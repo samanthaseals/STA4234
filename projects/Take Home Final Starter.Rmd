@@ -17,6 +17,7 @@ options(scipen = 999)
 
 # call in data
 data <- as_tibble(gsheet2tbl("https://docs.google.com/spreadsheets/d/1Kjtlt4KSSRXHF1PtYvWFzOaOZNsys9dMh8HqDT6PTEw"))
+data <- na.omit(data)
 ```
 
 ### 1. Model the ideal number of children for a family to have using linear regression under the normal distribution. Include years of education, marital status (use never married as the reference group), sex, and all possible two-way interactions as predictors.
